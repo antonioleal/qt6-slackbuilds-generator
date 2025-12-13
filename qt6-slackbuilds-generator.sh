@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Slackware build script for qt6-slackbuilds-generator
+
+# Copyright 2025 Antonio Leal, Porto Salvo, Oeiras, Portugal
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+# Setup
+VERSION=6.10.1 # The Qt version you want, for example 6.10.1
+MAINVERSION=$(echo $VERSION | cut -d"." -f 1,2)  # Holds "6.10", for example
+
+# Execution
+cd $(dirname $0) ; CWD=$(pwd)
+echo
+echo "Generating Qt $VERSION SlackBuilds into the 'output' directory:"
+echo
+rm -rf output
+mkdir -p output
+cd output
+for NAME in $(cat $CWD/submodules.txt)
+do
+    echo "qt6-$NAME"
+    TARBALL="qt$NAME-everywhere-src-$VERSION.tar.xz"
+    MD5=`md5sum $CWD/downloads/$TARBALL | cut -d' ' -f1`
+
+    # Now read the dependencies
+    DEPENDENCIES=""
+    for d in $(tar --to-command=cat -xf $CWD/downloads/qt$NAME-everywhere-src-$VERSION.tar.xz qt$NAME-everywhere-src-$VERSION/dependencies.yaml | grep "qt" | awk '{print substr($0,6,length($0)-6)}')
+    do
+        DEPENDENCIES="$DEPENDENCIES $d"
+    done
+
+    # Create the output slackbuild directory
+    rm -rf $CWD/output/qt6-$NAME
+    mkdir -p $CWD/output/qt6-$NAME
+    cd $CWD/output/qt6-$NAME
+
+    # Build README
+    sed -e "s/_prgnam_/$NAME/g" \
+        $CWD/template/README > $CWD/output/qt6-$NAME/README
+
+    # Build slack-desc
+    sed -e "s/_prgnam_/$NAME/g" \
+        -e "s/_ruler_/`echo $NAME | tr "[:alnum:]" " "`/g" \
+        $CWD/template/slack-desc > $CWD/output/qt6-$NAME/slack-desc
+
+    # Build info
+    sed -e "s/_prgnam_/$NAME/g" \
+        -e "s/_version_/$VERSION/g" \
+        -e "s/_mainversion_/$MAINVERSION/g" \
+        -e "s/_md5_/$MD5/g" \
+        -e "s/_dependencies_/${DEPENDENCIES}/g" \
+        $CWD/template/info > $CWD/output/qt6-$NAME/qt6-$NAME.info
+
+    # Build SlackBuild
+    sed -e "s/_prgnam_/$NAME/g" \
+        -e "s/_version_/$VERSION/g" \
+        $CWD/template/SlackBuild > $CWD/output/qt6-$NAME/qt6-$NAME.SlackBuild
+
+    # Copy TARBALL to SlackBuild directory
+    # cp $CWD/downloads/$TARBALL .
+done
+
+echo
+echo "Done."
