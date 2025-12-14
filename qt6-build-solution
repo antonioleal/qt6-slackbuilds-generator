@@ -59,9 +59,7 @@ def check_syntax():
 def load_dependencies():
     deps = {'qt6-base':[]}
     os.chdir('output')
-    os.system('find . -name "*.info" -print | xargs -n2 grep "REQUIRES" | tr "=" "/" | cut -d"/" -f2,4 | tr "/" "=" > requires.txt')
-    with open('requires.txt', 'r') as file:
-        lista=file.readlines()
+    lista = os.popen('find . -name "*.info" -print | xargs -n2 grep "REQUIRES" | tr "=" "/" | cut -d"/" -f2,4 | tr "/" "=" 2>&1').read().strip().split('\n')
     for d in lista:
         key = d.split('=')[0]
         val = d.split('=')[1].replace('"','').strip().split()
@@ -98,7 +96,7 @@ def print_order(order):
         print()
         i = i + 1
     print()
-    print('list: ',end=' ')
+    print('  -> ',end=' ')
     for pkg in order:
         if pkg not in already_installed:
             print(pkg,end=' ')
