@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+#**********************************************************************************
+#*                                                                                *
+#*                               Qt6 Build Solution                               *
+#*          ------------------------------------------------------------          *
+#*                                                                                *
+#**********************************************************************************
+#
+# Copyright 2025 Antonio Leal, Porto Salvo, Portugal
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# $Id:$
+
+import sys
+import os
+import subprocess
+
+version='6.10.1'
+solution = ['qt6-base','qt6-shadertools','qt6-svg','qt6-imageformats','qt6-languageserver','qt6-declarative','qt6-serialport','qt6-websockets','qt6-networkauth','qt6-activeqt','qt6-tools','qt6-5compat','qt6-scxml','qt6-connectivity','qt6-httpserver','qt6-positioning','qt6-webchannel','qt6-webengine','qt6-webview','qt6-serialbus','qt6-quicktimeline','qt6-quick3d','qt6-multimedia','qt6-charts','qt6-3d','qt6-grpc','qt6-remoteobjects','qt6-sensors','qt6-datavis3d','qt6-graphs','qt6-quick3dphysics','qt6-quickeffectmaker','qt6-location','qt6-lottie','qt6-speech','qt6-wayland','qt6-translations','qt6-virtualkeyboard','qt6-doc']
+needs = []
+
+def check_syntax():
+    invalid = False
+    if len(sys.argv) != 2:
+        invalid = True
+    elif sys.argv[1] not in solution:
+        invalid = True
+    if invalid:
+        print('\nUsage: qt6-build-solution <package>')
+        print()
+        print('  where <package> is one of:\n')
+        i = 1
+        for pkg in solution:
+            print('%4s %s' % (i, pkg))
+            i = i + 1
+        print('\n  example: ')
+        print('      qt6-build-solution qt6-declarative \n')
+        sys.exit(0)
+
+# Read all *.info files and populate a dictionaty od dependencies
+def load_dependencies():
+    deps = {}
+    os.chdir('output')
+    os.system('find . -name "*.info" -print | xargs -n2 grep "REQUIRES" | tr "=" "/" | cut -d"/" -f2,4 | tr "/" "=" > requires.txt')
+    with open('requires.txt', 'r') as file:
+        lista=file.readlines()
+    for d in lista:
+        key = d.split('=')[0]
+        val = d.split('=')[1].replace('"','').strip().split()
+        deps[key] = val
+        #print(key,val)
+    return deps
+
+# From the selected package determine the unordered list of dependencies
+def build_needs(deps, pkg):
+    if pkg[0] != 'q' or pkg == 'qt6-base':
+        return
+    if pkg not in needs:
+        needs.append(pkg)
+    for p in deps[pkg]:
+        if p not in needs:
+            build_needs(deps, p)
+
+# Convert the unordered list of dependencies into an ordered one
+def build_order():
+    ret = []
+    for pkg in solution:
+        if pkg in needs:
+            ret.append(pkg)
+    return ret
+
+def print_order(order):
+    print('\nPlease build in the following order:\n')
+    i=1
+    print('%4s %s' % (1, 'qt6-base'))
+    for pkg in order:
+        i = i + 1
+        print('%4s %s' % (i, pkg))
+    print()
+
+def main():
+    check_syntax()
+    dependencies = load_dependencies()
+    build_needs(dependencies, sys.argv[1])
+    order = build_order()
+    print_order(order)
+
+if __name__ == '__main__':
+    main()
