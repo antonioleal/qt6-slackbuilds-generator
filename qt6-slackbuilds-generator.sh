@@ -45,7 +45,7 @@ do
     DEPENDENCIES=""
     for d in $(tar --to-command=cat -xf $CWD/downloads/qt$NAME-everywhere-src-$VERSION.tar.xz qt$NAME-everywhere-src-$VERSION/dependencies.yaml | grep "qt" | awk '{print substr($0,6,length($0)-6)}')
     do
-        DEPENDENCIES="$DEPENDENCIES $d"
+        DEPENDENCIES="$DEPENDENCIES qt6-${d:2}"
     done
 
     # Create the output slackbuild directory
@@ -76,7 +76,7 @@ do
         $CWD/template/SlackBuild > $CWD/output/qt6-$NAME/qt6-$NAME.SlackBuild
 
     # Copy TARBALL to SlackBuild directory
-    # cp $CWD/downloads/$TARBALL .
+    cp $CWD/downloads/$TARBALL .
 done
 
 echo

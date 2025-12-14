@@ -79,6 +79,10 @@ mkdir b
 cd b
 export CFLAGS="$SLKCFLAGS -w"
 export CXXFLAGS="$SLKCFLAGS -w"
+export PATH=/opt/Qt/prebuilt-environment/libclang/bin:$PATH
+export LLVM_INSTALL_DIR=/opt/Qt/prebuilt-environment/libclang
+export LD_LIBRARY_PATH=/opt/Qt/prebuilt-environment/libclang/lib:$LD_LIBRARY_PATH
+
 /opt/Qt/${VERSION}/bin/qt-configure-module ..
 cmake --build . --parallel
 DESTDIR=$PKG cmake --install .
