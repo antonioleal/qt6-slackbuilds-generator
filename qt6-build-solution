@@ -95,6 +95,11 @@ def print_order(order):
         i = i + 1
         print('%4s %s' % (i, pkg))
     print()
+    print('qt6-base',end=' ')
+    for pkg in order:
+        print(pkg,end=' ')
+    print()
+    print()
 
 def main():
     check_syntax()
