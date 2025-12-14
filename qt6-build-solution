@@ -57,7 +57,7 @@ def check_syntax():
 
 # Read all *.info files and populate a dictionaty od dependencies
 def load_dependencies():
-    deps = {}
+    deps = {'qt6-base':[]}
     os.chdir('output')
     os.system('find . -name "*.info" -print | xargs -n2 grep "REQUIRES" | tr "=" "/" | cut -d"/" -f2,4 | tr "/" "=" > requires.txt')
     with open('requires.txt', 'r') as file:
@@ -66,12 +66,12 @@ def load_dependencies():
         key = d.split('=')[0]
         val = d.split('=')[1].replace('"','').strip().split()
         deps[key] = val
-        #print(key,val)
+        print(key,val)
     return deps
 
 # From the selected package determine the unordered list of dependencies
 def build_needs(deps, pkg):
-    if pkg[0] != 'q' or pkg == 'qt6-base':
+    if pkg[0] != 'q':
         return
     if pkg not in needs:
         needs.append(pkg)
@@ -88,16 +88,20 @@ def build_order():
     return ret
 
 def print_order(order):
+    already_installed = os.popen(f'ls -1 /var/log/packages/  | grep "qt6-.*{version}" | cut -d"-" -f1,2 2>&1').read().split()
     print('\nPlease build in the following order:\n')
     i=1
-    print('%4s %s' % (1, 'qt6-base'))
     for pkg in order:
+        print('%4s %-20s' % (i, pkg), end='')
+        if pkg in already_installed:
+            print(' (already installed)', end='')
+        print()
         i = i + 1
-        print('%4s %s' % (i, pkg))
     print()
-    print('qt6-base',end=' ')
+    print('list: ',end=' ')
     for pkg in order:
-        print(pkg,end=' ')
+        if pkg not in already_installed:
+            print(pkg,end=' ')
     print()
     print()
 
