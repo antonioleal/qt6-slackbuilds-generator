@@ -37,6 +37,9 @@ mkdir -p output
 cd output
 for NAME in $(cat $CWD/submodules.txt)
 do
+    if [[ "$NAME" == "base" ]]; then
+        continue
+    fi
     echo "qt6-$NAME"
     TARBALL="qt$NAME-everywhere-src-$VERSION.tar.xz"
     MD5=`md5sum $CWD/downloads/$TARBALL | cut -d' ' -f1`
