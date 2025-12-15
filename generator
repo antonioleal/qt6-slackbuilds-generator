@@ -26,6 +26,7 @@
 # Setup
 VERSION=6.10.1 # The Qt version you want, for example 6.10.1
 MAINVERSION=$(echo $VERSION | cut -d"." -f 1,2)  # Holds "6.10", for example
+SOLUTION="qt6-base qt6-shadertools qt6-svg qt6-imageformats qt6-languageserver qt6-declarative qt6-serialport qt6-websockets qt6-networkauth qt6-activeqt qt6-tools qt6-5compat qt6-scxml qt6-connectivity qt6-httpserver qt6-positioning qt6-webchannel qt6-webengine qt6-webview qt6-serialbus qt6-quicktimeline qt6-quick3d qt6-multimedia qt6-charts qt6-3d qt6-grpc qt6-remoteobjects qt6-sensors qt6-datavis3d qt6-graphs qt6-quick3dphysics qt6-quickeffectmaker qt6-location qt6-lottie qt6-speech qt6-wayland qt6-translations qt6-virtualkeyboard qt6-doc"
 
 # Execution
 cd $(dirname $0) ; CWD=$(pwd)
@@ -41,48 +42,48 @@ cp downloads/qtbase-everywhere-src-$VERSION.tar.xz output/qt6-base
 
 cd output
 
-for NAME in $(cat $CWD/basenames.dat)
+for NAME in $SOLUTION
 do
-    if [[ "$NAME" == "base" ]]; then
+    echo "$NAME"
+    if [[ "${NAME:4}" == "base" ]]; then
         continue
     fi
-    echo "qt6-$NAME"
-    TARBALL="qt$NAME-everywhere-src-$VERSION.tar.xz"
+    TARBALL="qt${NAME:4}-everywhere-src-$VERSION.tar.xz"
     MD5=`md5sum $CWD/downloads/$TARBALL | cut -d' ' -f1`
 
     # Now read the dependencies
     DEPENDENCIES=""
-    for d in $(tar --to-command=cat -xf $CWD/downloads/qt$NAME-everywhere-src-$VERSION.tar.xz qt$NAME-everywhere-src-$VERSION/dependencies.yaml | grep "qt" | awk '{print substr($0,6,length($0)-6)}')
+    for d in $(tar --to-command=cat -xf $CWD/downloads/qt${NAME:4}-everywhere-src-$VERSION.tar.xz qt${NAME:4}-everywhere-src-$VERSION/dependencies.yaml | grep "qt" | awk '{print substr($0,6,length($0)-6)}')
     do
         DEPENDENCIES="$DEPENDENCIES qt6-${d:2}"
     done
 
     # Create the output slackbuild directory
-    rm -rf $CWD/output/qt6-$NAME
-    mkdir -p $CWD/output/qt6-$NAME
-    cd $CWD/output/qt6-$NAME
+    rm -rf $CWD/output/$NAME
+    mkdir -p $CWD/output/$NAME
+    cd $CWD/output/$NAME
 
     # Build README
-    sed -e "s/_prgnam_/$NAME/g" \
-        $CWD/template/README > $CWD/output/qt6-$NAME/README
+    sed -e "s/_prgnam_/${NAME:4}/g" \
+        $CWD/template/README > $CWD/output/$NAME/README
 
     # Build slack-desc
-    sed -e "s/_prgnam_/$NAME/g" \
-        -e "s/_ruler_/`echo $NAME | tr "[:alnum:]" " "`/g" \
-        $CWD/template/slack-desc > $CWD/output/qt6-$NAME/slack-desc
+    sed -e "s/_prgnam_/${NAME:4}/g" \
+        -e "s/_ruler_/`echo ${NAME:4} | tr "[:alnum:]" " "`/g" \
+        $CWD/template/slack-desc > $CWD/output/$NAME/slack-desc
 
     # Build info
-    sed -e "s/_prgnam_/$NAME/g" \
+    sed -e "s/_prgnam_/${NAME:4}/g" \
         -e "s/_version_/$VERSION/g" \
         -e "s/_mainversion_/$MAINVERSION/g" \
         -e "s/_md5_/$MD5/g" \
         -e "s/_dependencies_/${DEPENDENCIES}/g" \
-        $CWD/template/info > $CWD/output/qt6-$NAME/qt6-$NAME.info
+        $CWD/template/info > $CWD/output/$NAME/$NAME.info
 
     # Build SlackBuild
-    sed -e "s/_prgnam_/$NAME/g" \
+    sed -e "s/_prgnam_/${NAME:4}/g" \
         -e "s/_version_/$VERSION/g" \
-        $CWD/template/SlackBuild > $CWD/output/qt6-$NAME/qt6-$NAME.SlackBuild
+        $CWD/template/SlackBuild > $CWD/output/$NAME/$NAME.SlackBuild
 
     # Copy TARBALL to SlackBuild directory
     cp $CWD/downloads/$TARBALL .
