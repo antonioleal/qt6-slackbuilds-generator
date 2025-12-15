@@ -34,7 +34,7 @@ cd $(dirname $0) ; CWD=$(pwd)
 rm -rf downloads
 mkdir -p downloads
 cd downloads
-for NAME in $(cat $CWD/submodules.txt)
+for NAME in $(cat $CWD/basenames.dat)
 do
     URL="https://download.qt.io/archive/qt/$MAINVERSION/$VERSION/submodules/qt$NAME-everywhere-src-$VERSION.tar.xz"
     wget $URL

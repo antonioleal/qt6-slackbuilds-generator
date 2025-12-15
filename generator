@@ -34,8 +34,14 @@ echo "Generating Qt $VERSION SlackBuilds into the 'output' directory:"
 echo
 rm -rf output
 mkdir -p output
+
+# We handle qt6-base differently
+cp -axu qt6-base output
+cp downloads/qtbase-everywhere-src-$VERSION.tar.xz output/qt6-base
+
 cd output
-for NAME in $(cat $CWD/submodules.txt)
+
+for NAME in $(cat $CWD/basenames.dat)
 do
     if [[ "$NAME" == "base" ]]; then
         continue

@@ -63,9 +63,9 @@ def check_syntax():
 
 # Read all *.info files and populate a dictionaty od dependencies
 def load_dependencies():
-    deps = {'qt6-base':[]}
+    deps = {}
     os.chdir('output')
-    lista = os.popen('find . -name "*.info" -print | xargs -n2 grep "REQUIRES" | tr "=" "/" | cut -d"/" -f2,4 | tr "/" "=" 2>&1').read().strip().split('\n')
+    lista = os.popen('for f in `find . -name "*.info" -print`; do echo -n "$f:"; cat $f | grep "REQUIRES"; done | tr "=" "/" | cut -d"/" -f2,4 | tr "/" "=" 2>&1').read().strip().split('\n')
     for d in lista:
         key = d.split('=')[0]
         val = d.split('=')[1].replace('"','').strip().split()
@@ -75,7 +75,7 @@ def load_dependencies():
 
 # From the selected package determine the unordered list of dependencies
 def build_needs(deps, pkg):
-    if pkg == 'cmake-opt' or pkg == 'qt-prebuilt-environment':
+    if pkg[0:4] != 'qt6-':
         return
     if pkg not in needs:
         needs.append(pkg)
