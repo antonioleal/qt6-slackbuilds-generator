@@ -105,7 +105,7 @@ def print_order(order):
     for pkg in order:
         if pkg not in already_installed:
             print(pkg,end=' ')
-    print()
+    print('\n')
 
 def build_solution(order):
     try:
