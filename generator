@@ -40,12 +40,12 @@ cd output
 for NAME in $SOLUTION
 do
     echo "$NAME"
-    if [[ "${NAME:4}" == "qt6-prebuilt_environment" ]]; then
+    if [[ "$NAME" == "qt6-prebuilt_environment" ]]; then
         cp -axu ../qt6-prebuilt_environment .
         cp ../downloads/libclang-llvmorg-20.1.0-linux-Rhel8.10-gcc10.0-x86_64.7z qt6-prebuilt_environment
         continue
     fi
-    if [[ "${NAME:4}" == "base" ]]; then
+    if [[ "$NAME" == "qt6-base" ]]; then
         cp -axu ../qt6-base .
         cp ../downloads/qtbase-everywhere-src-$VERSION.tar.xz qt6-base
         continue

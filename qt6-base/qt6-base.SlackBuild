@@ -77,16 +77,16 @@ find -L . \
 rm -rf b
 mkdir b
 cd b
-export PATH=/opt/Qt/prebuilt-environment/libclang/bin:$PATH
-export LLVM_INSTALL_DIR=/opt/Qt/prebuilt-environment/libclang
-export LD_LIBRARY_PATH=/opt/Qt/prebuilt-environment/libclang/lib:$LD_LIBRARY_PATH
+export PATH=/opt/Qt/prebuilt_environment/libclang/bin:$PATH
+export LLVM_INSTALL_DIR=/opt/Qt/prebuilt_environment/libclang
+export LD_LIBRARY_PATH=/opt/Qt/prebuilt_environment/libclang/lib:$LD_LIBRARY_PATH
 cmake \
     -G Ninja \
     -Wno-dev \
     -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
     -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
     -DCMAKE_INSTALL_PREFIX=/opt/Qt/$VERSION \
-    -DCMAKE_PREFIX_PATH=/opt/Qt/prebuilt-environment/libclang \
+    -DCMAKE_PREFIX_PATH=/opt/Qt/prebuilt_environment/libclang \
     -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --parallel
 DESTDIR=$PKG cmake --install .
