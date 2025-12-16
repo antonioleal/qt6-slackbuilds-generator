@@ -1,5 +1,5 @@
 PRGNAM="qt6-prebuilt_environment"
-VERSION="6.10.1"
+VERSION="20.1.0"
 HOMEPAGE="https://download.qt.io/development_releases/prebuilt/libclang/qt"
 DOWNLOAD="UNSUPPORTED"
 MD5SUM=""

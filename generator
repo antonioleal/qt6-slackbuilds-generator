@@ -26,7 +26,7 @@
 # Setup
 VERSION=6.10.1 # The Qt version you want, for example 6.10.1
 MAINVERSION=$(echo $VERSION | cut -d"." -f 1,2)  # Holds "6.10", for example
-SOLUTION="qt6-base qt6-shadertools qt6-svg qt6-imageformats qt6-languageserver qt6-declarative qt6-serialport qt6-websockets qt6-networkauth qt6-activeqt qt6-tools qt6-5compat qt6-scxml qt6-connectivity qt6-httpserver qt6-positioning qt6-webchannel qt6-webengine qt6-webview qt6-serialbus qt6-quicktimeline qt6-quick3d qt6-multimedia qt6-charts qt6-3d qt6-grpc qt6-remoteobjects qt6-sensors qt6-datavis3d qt6-graphs qt6-quick3dphysics qt6-quickeffectmaker qt6-location qt6-lottie qt6-speech qt6-wayland qt6-translations qt6-virtualkeyboard qt6-doc"
+SOLUTION="qt6-prebuilt_environment qt6-base qt6-shadertools qt6-svg qt6-imageformats qt6-languageserver qt6-declarative qt6-serialport qt6-websockets qt6-networkauth qt6-activeqt qt6-tools qt6-5compat qt6-scxml qt6-connectivity qt6-httpserver qt6-positioning qt6-webchannel qt6-webengine qt6-webview qt6-serialbus qt6-quicktimeline qt6-quick3d qt6-multimedia qt6-charts qt6-3d qt6-grpc qt6-remoteobjects qt6-sensors qt6-datavis3d qt6-graphs qt6-quick3dphysics qt6-quickeffectmaker qt6-location qt6-lottie qt6-speech qt6-wayland qt6-translations qt6-virtualkeyboard qt6-doc"
 
 # Execution
 cd $(dirname $0) ; CWD=$(pwd)
@@ -35,17 +35,19 @@ echo "Generating Qt $VERSION SlackBuilds into the 'output' directory:"
 echo
 rm -rf output
 mkdir -p output
-
-# We handle qt6-base differently
-cp -axu qt6-base output
-cp downloads/qtbase-everywhere-src-$VERSION.tar.xz output/qt6-base
-
 cd output
 
 for NAME in $SOLUTION
 do
     echo "$NAME"
+    if [[ "${NAME:4}" == "qt6-prebuilt_environment" ]]; then
+        cp -axu ../qt6-prebuilt_environment .
+        cp ../downloads/libclang-llvmorg-20.1.0-linux-Rhel8.10-gcc10.0-x86_64.7z qt6-prebuilt_environment
+        continue
+    fi
     if [[ "${NAME:4}" == "base" ]]; then
+        cp -axu ../qt6-base .
+        cp ../downloads/qtbase-everywhere-src-$VERSION.tar.xz qt6-base
         continue
     fi
     TARBALL="qt${NAME:4}-everywhere-src-$VERSION.tar.xz"
