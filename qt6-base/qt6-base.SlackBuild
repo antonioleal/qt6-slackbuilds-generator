@@ -80,7 +80,7 @@ cd b
 export PATH=/opt/Qt/prebuilt_environment/libclang/bin:$PATH
 export LLVM_INSTALL_DIR=/opt/Qt/prebuilt_environment/libclang
 export LD_LIBRARY_PATH=/opt/Qt/prebuilt_environment/libclang/lib:$LD_LIBRARY_PATH
-cmake \
+/opt/cmake-opt/bin/cmake \
     -G Ninja \
     -Wno-dev \
     -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
@@ -88,8 +88,8 @@ cmake \
     -DCMAKE_INSTALL_PREFIX=/opt/Qt/$VERSION \
     -DCMAKE_PREFIX_PATH=/opt/Qt/prebuilt_environment/libclang \
     -DCMAKE_BUILD_TYPE=Release ..
-cmake --build . --parallel
-DESTDIR=$PKG cmake --install .
+/opt/cmake-opt/bin/cmake --build . --parallel
+DESTDIR=$PKG /opt/cmake-opt/bin/cmake --install .
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
