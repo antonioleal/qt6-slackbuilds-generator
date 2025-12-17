@@ -119,7 +119,8 @@ def build_solution(order):
             if pkg not in already_installed:
                 os.chdir(pkg)
                 os.system(f'sudo sh ./{pkg}.SlackBuild')
-                os.system(f'sudo /sbin/upgradepkg --install-new /tmp/{pkg}-{version}-x86_64-1_SBo.tgz')
+                ver = os.popen(f'grep "VERSION" {pkg}.info | cut -d\'"\' -f2').read().strip()
+                os.system(f'sudo /sbin/upgradepkg --install-new /tmp/{pkg}-{ver}-x86_64-1_SBo.tgz')
                 os.chdir('..')
     print()
 
