@@ -1,6 +1,6 @@
 # Qt6 SlackBuilds Generator 
 
-This program generates a set of SlackBuilds that build Qt6 as separate modules allowing you to have smaller and more controlled Qt6 builds. This is particularly useful if you have a slow computer or need just a small subset on Qt. In any case the remaining packages can be build later as needed.
+This program generates a set of SlackBuilds that build Qt6 as separate modules allowing you to have smaller and more controlled Qt6 builds. This is particularly useful if you have a slow computer or need just a small subset on Qt. You build the packages as needed by your programs, and don't/shouldn't need to build all at once.
 
 These packages depend on *cmake-opt* available at SlackBuils.org. Install it before continuing below.
 
