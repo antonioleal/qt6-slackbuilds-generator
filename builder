@@ -36,12 +36,12 @@ import subprocess
 version='6.10.1'
 solution = ['qt6-prebuilt_environment','qt6-base','qt6-shadertools','qt6-svg','qt6-imageformats','qt6-languageserver','qt6-declarative','qt6-serialport','qt6-websockets','qt6-networkauth','qt6-activeqt','qt6-tools','qt6-5compat','qt6-scxml','qt6-connectivity','qt6-httpserver','qt6-positioning','qt6-webchannel','qt6-webengine','qt6-webview','qt6-serialbus','qt6-quicktimeline','qt6-quick3d','qt6-multimedia','qt6-charts','qt6-3d','qt6-grpc','qt6-remoteobjects','qt6-sensors','qt6-datavis3d','qt6-graphs','qt6-quick3dphysics','qt6-quickeffectmaker','qt6-location','qt6-lottie','qt6-speech','qt6-wayland','qt6-translations','qt6-virtualkeyboard','qt6-doc']
 needs = []
-already_installed = os.popen(f'ls -1 /var/log/packages/  | grep "qt6-.*{version}" | cut -d"-" -f1,2 2>&1').read().split()
+already_installed = os.popen(f'ls -1 /var/log/packages/  | grep "qt6-.*" | cut -d"-" -f1,2 2>&1').read().split()
 
-def ensure_script_directory():
-    abspath = os.path.abspath(__file__)
-    dname = os.path.dirname(abspath)
-    os.chdir(dname)
+def check_root():
+    if os.geteuid() != 0:
+        print('\nYou need to run this as root.\n')
+        sys.exit(0)
 
 def check_syntax():
     invalid = False
@@ -60,6 +60,11 @@ def check_syntax():
         print('\n  example: ')
         print('      qt6-build-solution qt6-declarative \n')
         sys.exit(0)
+
+def ensure_script_directory():
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
 
 # Read all *.info files and populate a dictionaty od dependencies
 def load_dependencies():
@@ -125,10 +130,13 @@ def build_solution(order):
     print()
 
 def main():
+    check_root()
     check_syntax()
     ensure_script_directory()
+
     dependencies = load_dependencies()
     build_needs(dependencies, sys.argv[1])
+
     order = build_order()
     print_order(order)
     build_solution(order)
