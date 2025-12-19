@@ -55,7 +55,10 @@ def check_syntax():
         print('  where <package> is one of:\n')
         i = 0
         for pkg in solution:
-            print('%4s %s' % (i, pkg))
+            print('%4s %-30s' % (i, pkg), end='')
+            if pkg in already_installed:
+                print(' (already installed)', end='')
+            print()
             i = i + 1
         print('\n  example: ')
         print('      qt6-build-solution qt6-declarative \n')
@@ -100,7 +103,7 @@ def print_order(order):
     print('\nPlease build in the following order:\n')
     i=0
     for pkg in order:
-        print('%4s %-20s' % (i, pkg), end='')
+        print('%4s %-30s' % (i, pkg), end='')
         if pkg in already_installed:
             print(' (already installed)', end='')
         print()
