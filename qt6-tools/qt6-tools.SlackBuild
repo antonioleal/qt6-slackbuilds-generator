@@ -93,16 +93,16 @@ find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | gr
 
 mkdir -p $PKG/usr/share/icons/hicolor/128x128/apps
 install -Dm644 ../src/assistant/assistant/images/assistant-128.png \
-  $PKG/usr/share/icons/hicolor/128x128/apps/$PRGNAM-assistant.png
+  $PKG/usr/share/icons/hicolor/128x128/apps/qt6-assistant.png
 install -Dm644 ../src/designer/src/designer/images/designer.png \
-  $PKG/usr/share/icons/hicolor/128x128/apps/$PRGNAM-designer.png
+  $PKG/usr/share/icons/hicolor/128x128/apps/qt6-designer.png
 install -Dm644 ../src/qdbus/qdbusviewer/images/qdbusviewer-128.png \
-  $PKG/usr/share/icons/hicolor/128x128/apps/$PRGNAM-qdbusviewer.png
+  $PKG/usr/share/icons/hicolor/128x128/apps/qt6-qdbusviewer.png
 install -Dm644 ../src/linguist/linguist/images/icons/linguist-128-32.png \
-  $PKG/usr/share/icons/hicolor/128x128/apps/$PRGNAM-linguist.png
+  $PKG/usr/share/icons/hicolor/128x128/apps/qt6-linguist.png
 
 mkdir -p $PKG/usr/share/applications
-cat <<EOF > $PKG/usr/share/applications/$PRGNAM-designer.desktop
+cat <<EOF > $PKG/usr/share/applications/qt6-designer.desktop
 [Desktop Entry]
 Name=Qt6 Designer
 GenericName=Interface Designer
@@ -115,7 +115,7 @@ Encoding=UTF-8
 Type=Application
 Categories=Qt;Development;
 EOF
-cat <<EOF > $PKG/usr/share/applications/$PRGNAM-assistant.desktop
+cat <<EOF > $PKG/usr/share/applications/qt6-assistant.desktop
 [Desktop Entry]
 Name=Qt6 Assistant
 Comment=Shows Qt6 documentation and examples
@@ -126,7 +126,7 @@ Encoding=UTF-8
 Type=Application
 Categories=Qt;Development;Documentation;
 EOF
-cat <<EOF > $PKG/usr/share/applications/$PRGNAM-linguist.desktop
+cat <<EOF > $PKG/usr/share/applications/qt6-linguist.desktop
 [Desktop Entry]
 Name=Qt6 Linguist
 Comment=Add translations to Qt6 applications
@@ -138,7 +138,7 @@ Encoding=UTF-8
 Type=Application
 Categories=Qt;Development;
 EOF
-cat <<EOF > $PKG/usr/share/applications/$PRGNAM-qdbusviewer.desktop
+cat <<EOF > $PKG/usr/share/applications/qt6-qdbusviewer.desktop
 [Desktop Entry]
 Name=Qt6 QDbusViewer
 GenericName=Qt6 D-Bus Debugger
